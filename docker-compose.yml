@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build:
@@ -24,4 +22,4 @@ services:
     environment:
       - VITE_BASE_URL=${VITE_BASE_URL}
     working_dir: /app
-    command: npm run dev
+    command: yarn dev
