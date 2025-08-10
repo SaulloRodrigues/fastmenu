@@ -1,9 +1,11 @@
 package models
 
+import "github.com/shopspring/decimal"
+
 type Product struct {
-	ID          int     `json:"id"`
+	ID          int     `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	ImageURL    string  `json:"image_url"`
-	Price       float64 `json:"price"`
+	Price       decimal.Decimal `gorm:"type:decimal(10,2)" json:"price"`
 }
