@@ -22,7 +22,12 @@ func GetProducts(c *gin.Context) {
 func GetProduct(c *gin.Context) {
 	id := c.Params.ByName("id")
 
-	product := services.GetProductById(id)
+	product, err := services.GetProductById(id)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Produto não encontrado"})
+		return
+	}
 	
 	c.JSON(http.StatusOK, product)
 }

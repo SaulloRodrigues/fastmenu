@@ -22,15 +22,16 @@ func GetAllProducts() ([]models.Product, error) {
 	return products, nil
 }
 
-func GetProductById(id string) error {
-	var product models.Product 
+func GetProductById(id string) (models.Product, error) {
+    var product models.Product 
 
-	if err := config.DB.Where("id = ?", id).First(&product).Error; err != nil {
-		return err
-	}
-
-	return nil
+    if err := config.DB.Where("id = ?", id).First(&product).Error; err != nil {
+        return models.Product{}, err
+    }
+    
+    return product, nil
 }
+
 
 func CreateProduct(input ProductInputDetails) (*models.Product, error) {
     product := models.Product{}
