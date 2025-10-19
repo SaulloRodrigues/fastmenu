@@ -29,12 +29,18 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="max-w-5xl mx-auto p-4 h-fit bg-black/10">
-        <div class="flex flex-row gap-4">
-            <div class="w-fit h-fit py-4 bg-black-85" v-for="product in products" :key="product.id">
-                <img :src="product.image_url" alt="Product Image" class="w-40 h-40 object-cover mb-2">
-                <p>{{ product.name }}</p>
-                <p>{{ product.description }}</p>
+    <div class="max-w-6xl mx-auto p-4 h-fit bg-black/10 rounded-2xl">
+        <div class="flex flex-row flex-wrap justify-between gap-4">
+            <div class="flex flex-col space-y-1 w-80 h-fit p-5 bg-black/5 rounded-2xl" v-for="product in products"
+                :key="product.id">
+                <div class="flex items-center justify-center w-full h-fit">
+                    <img :src="product.image_url" alt="Product Image"
+                        class="w-40 h-fit object-cover mb-4" />
+                </div>
+                <span class="font-bold line-clamp-1">{{ product.name }}</span>
+                <div class="w-full h-fit text-sm font-medium text-gray-700 text-justify max-h-[12.5rem] overflow-hidden">
+                    <p class="line-clamp-6">{{ product.description }}</p>
+                </div>
                 <p>{{ product.price }} R$</p>
             </div>
         </div>

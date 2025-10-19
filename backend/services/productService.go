@@ -3,15 +3,15 @@ package services
 import (
 	"app-fastmenu-backend/config"
 	"app-fastmenu-backend/models"
-
 	"github.com/shopspring/decimal"
-) 
+)
 
 type ProductInputDetails struct {
-    Name        *string          `json:"name"`
-    Description *string          `json:"description"`
-    ImageURL    *string          `json:"image_url"`
-    Price       *decimal.Decimal `json:"price"`
+	Name        *string           `json:"name"`
+	Description *string           `json:"description"`
+	ImageURL    *string           `json:"image_url"`
+	Price       *decimal.Decimal  `json:"price"`
+	Categories  []models.Category `gorm:"many2many:product_categories;" json:"categories"`
 }
 
 func GetAllProducts() ([]models.Product, error) {
@@ -23,36 +23,35 @@ func GetAllProducts() ([]models.Product, error) {
 }
 
 func GetProductById(id string) (models.Product, error) {
-    var product models.Product 
+	var product models.Product
 
-    if err := config.DB.Where("id = ?", id).First(&product).Error; err != nil {
-        return models.Product{}, err
-    }
-    
-    return product, nil
+	if err := config.DB.Where("id = ?", id).First(&product).Error; err != nil {
+		return models.Product{}, err
+	}
+
+	return product, nil
 }
 
-
 func CreateProduct(input ProductInputDetails) (*models.Product, error) {
-    product := models.Product{}
+	product := models.Product{}
 
-    if input.Name != nil {
-        product.Name = *input.Name
-    }
-    if input.Description != nil {
-        product.Description = *input.Description
-    }
-    if input.ImageURL != nil {
-        product.ImageURL = *input.ImageURL
-    }
-    if input.Price != nil {
-        product.Price = *input.Price
-    }
+	if input.Name != nil {
+		product.Name = *input.Name
+	}
+	if input.Description != nil {
+		product.Description = *input.Description
+	}
+	if input.ImageURL != nil {
+		product.ImageURL = *input.ImageURL
+	}
+	if input.Price != nil {
+		product.Price = *input.Price
+	}
 
-    if err := config.DB.Create(&product).Error; err != nil {
-        return nil, err
-    }
-    return &product, nil
+	if err := config.DB.Create(&product).Error; err != nil {
+		return nil, err
+	}
+	return &product, nil
 }
 
 func UpdateProductById(id string, input ProductInputDetails) error {
