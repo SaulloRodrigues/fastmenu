@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CategoryRoutes(router *gin.Engine) {
-	categoryGroup := router.Group("/api/categories")
+func CategoryRoutes(rg *gin.RouterGroup) {
+	categoryGroup := rg.Group("/categories")
 	{
 		categoryGroup.POST("/", controllers.CreateCategory)
 		categoryGroup.GET("/", controllers.GetCategories)

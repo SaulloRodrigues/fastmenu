@@ -3,20 +3,22 @@ package services
 import (
 	"app-fastmenu-backend/config"
 	"app-fastmenu-backend/models"
+	"fmt"
+
 	"github.com/shopspring/decimal"
 )
 
 type ProductInputDetails struct {
-	Name        *string           `json:"name"`
-	Description *string           `json:"description"`
-	ImageURL    *string           `json:"image_url"`
-	Price       *decimal.Decimal  `json:"price"`
-	Categories  []models.Category `gorm:"many2many:product_categories;" json:"categories"`
+	Name        *string          `json:"name"`
+	Description *string          `json:"description"`
+	ImageURL    *string          `json:"image_url"`
+	Price       *decimal.Decimal `json:"price"`
+	CategoryIDs []int            `json:"category_ids"`
 }
 
 func GetAllProducts() ([]models.Product, error) {
 	var products []models.Product
-	if err := config.DB.Find(&products).Error; err != nil {
+	if err := config.DB.Preload("Categories").Find(&products).Error; err != nil {
 		return nil, err
 	}
 	return products, nil
@@ -25,11 +27,24 @@ func GetAllProducts() ([]models.Product, error) {
 func GetProductById(id string) (models.Product, error) {
 	var product models.Product
 
-	if err := config.DB.Where("id = ?", id).First(&product).Error; err != nil {
+	if err := config.DB.Preload("Categories").Where("id = ?", id).First(&product).Error; err != nil {
 		return models.Product{}, err
 	}
 
 	return product, nil
+}
+
+func GetAllProductsByCategory(categoryID string) ([]models.Product, error) {
+	var products []models.Product
+
+	if err := config.DB.Preload("Categories").
+		Joins("JOIN product_categories ON products.id = product_categories.product_id").
+		Where("product_categories.category_id = ?", categoryID).
+		Find(&products).Error; err != nil {
+		return nil, err
+	}
+
+	return products, nil
 }
 
 func CreateProduct(input ProductInputDetails) (*models.Product, error) {
@@ -51,6 +66,24 @@ func CreateProduct(input ProductInputDetails) (*models.Product, error) {
 	if err := config.DB.Create(&product).Error; err != nil {
 		return nil, err
 	}
+
+	// Associar categorias se IDs foram fornecidos
+	if len(input.CategoryIDs) > 0 {
+		var categories []models.Category
+		if err := config.DB.Where("id IN ?", input.CategoryIDs).Find(&categories).Error; err != nil {
+			return nil, err
+		}
+
+		// Verificar se todos os IDs fornecidos existem
+		if len(categories) != len(input.CategoryIDs) {
+			return nil, fmt.Errorf("algumas categorias não foram encontradas")
+		}
+
+		if err := config.DB.Model(&product).Association("Categories").Append(categories); err != nil {
+			return nil, err
+		}
+	}
+
 	return &product, nil
 }
 
@@ -76,6 +109,31 @@ func UpdateProductById(id string, input ProductInputDetails) error {
 
 	if err := config.DB.Save(&product).Error; err != nil {
 		return err
+	}
+
+	// Atualizar categorias se IDs foram fornecidos
+	if input.CategoryIDs != nil {
+		// Limpar associações existentes
+		if err := config.DB.Model(&product).Association("Categories").Clear(); err != nil {
+			return err
+		}
+
+		// Adicionar novas categorias
+		if len(input.CategoryIDs) > 0 {
+			var categories []models.Category
+			if err := config.DB.Where("id IN ?", input.CategoryIDs).Find(&categories).Error; err != nil {
+				return err
+			}
+
+			// Verificar se todos os IDs fornecidos existem
+			if len(categories) != len(input.CategoryIDs) {
+				return fmt.Errorf("algumas categorias não foram encontradas")
+			}
+
+			if err := config.DB.Model(&product).Association("Categories").Append(categories); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil

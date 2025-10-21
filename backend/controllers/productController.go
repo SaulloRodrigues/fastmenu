@@ -31,6 +31,18 @@ func GetProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, product)
 }
 
+func GetProductsByCategory(c *gin.Context) {
+	categoryID := c.Params.ByName("category_id")
+	products, err := services.GetAllProductsByCategory(categoryID)
+	
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar produtos por categoria"})
+		return
+	}
+
+	c.JSON(http.StatusOK, products)
+}
+
 func CreateProduct(c *gin.Context) {
     var input services.ProductInputDetails
 
