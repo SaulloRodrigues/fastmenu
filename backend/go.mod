@@ -1,4 +1,4 @@
-module app-fastmenu-backend
+module menu-delivery
 
 go 1.24.4
 

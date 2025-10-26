@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"app-fastmenu-backend/services"
 	"log"
+	"menu-delivery/services"
 	"net/http"
 	"github.com/gin-gonic/gin"
 )
@@ -27,14 +27,14 @@ func GetProduct(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Produto não encontrado"})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, product)
 }
 
 func GetProductsByCategory(c *gin.Context) {
 	categoryID := c.Params.ByName("category_id")
 	products, err := services.GetAllProductsByCategory(categoryID)
-	
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar produtos por categoria"})
 		return
@@ -44,20 +44,20 @@ func GetProductsByCategory(c *gin.Context) {
 }
 
 func CreateProduct(c *gin.Context) {
-    var input services.ProductInputDetails
+	var input services.ProductInputDetails
 
-    if err := c.ShouldBindJSON(&input); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Erro ao ler corpo da requisição: " + err.Error()})
-        return
-    }
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Erro ao ler corpo da requisição: " + err.Error()})
+		return
+	}
 
-    product, err := services.CreateProduct(input)
-    if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar produto: " + err.Error()})
-        return
-    }
+	product, err := services.CreateProduct(input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar produto: " + err.Error()})
+		return
+	}
 
-    c.JSON(http.StatusCreated, product)
+	c.JSON(http.StatusCreated, product)
 }
 
 func UpdateProduct(c *gin.Context) {

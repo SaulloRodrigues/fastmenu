@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"app-fastmenu-backend/services"
 	"log"
+	"menu-delivery/services"
 	"net/http"
 	"github.com/gin-gonic/gin"
 )
@@ -27,7 +27,7 @@ func GetCategory(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Categoria não encontrada"})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, category)
 }
 

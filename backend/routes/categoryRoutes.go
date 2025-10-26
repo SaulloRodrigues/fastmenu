@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"app-fastmenu-backend/controllers"
+	"menu-delivery/controllers"
 	"github.com/gin-gonic/gin"
 )
 

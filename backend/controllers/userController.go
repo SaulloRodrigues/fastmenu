@@ -1,14 +1,11 @@
 package controllers
 
 import (
-	"app-fastmenu-backend/services"
 	"log"
+	"menu-delivery/services"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
-
-
 
 func GetUsers(c *gin.Context) {
 	users, err := services.GetAllUsers()
@@ -20,24 +17,20 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func CreateUser(c *gin.Context){
+func CreateUser(c *gin.Context) {
 	var input services.UserInputDetails
 
-	if err := c.ShouldBindJSON(&input); err != nil{
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Erro ao ler corpo da requisição: " + err.Error()})
 		return
 	}
 
 	user, err := services.CreateUser(input)
 
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar usuário: " + err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusCreated, user)
 }
-
-// func GetUser(c *gin.Context) {
-// 	user := c.Param(("id"))
-// }

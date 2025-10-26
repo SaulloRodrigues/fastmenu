@@ -1,10 +1,9 @@
 package services
 
 import (
-	"app-fastmenu-backend/config"
-	"app-fastmenu-backend/models"
 	"fmt"
-
+	"menu-delivery/config"
+	"menu-delivery/models"
 	"github.com/shopspring/decimal"
 )
 

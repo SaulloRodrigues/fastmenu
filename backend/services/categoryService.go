@@ -1,8 +1,8 @@
 package services
 
 import (
-	"app-fastmenu-backend/config"
-	"app-fastmenu-backend/models"
+	"menu-delivery/config"
+	"menu-delivery/models"
 )
 
 type CategoryInputDetails struct {

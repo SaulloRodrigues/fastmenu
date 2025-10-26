@@ -1,9 +1,9 @@
 package main
 
 import (
-	"app-fastmenu-backend/models"
-	"app-fastmenu-backend/routes"
-	"app-fastmenu-backend/config"
+	"menu-delivery/config"
+	"menu-delivery/models"
+	"menu-delivery/routes"
 	"os"
 )
 
